@@ -48,24 +48,37 @@ public class BookController {
 	public ModelAndView update(@RequestParam Map<String, Object> map) {
 		ModelAndView mav = new ModelAndView();
 		Map<String, Object> detailMap = this.bookService.detail(map);
-		
+
 		mav.addObject("data", detailMap);
 		mav.setViewName("/book/update");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public ModelAndView updatePost(@RequestParam Map<String, Object> map) {
 		ModelAndView mav = new ModelAndView();
 		boolean isUpdateSuccess = this.bookService.edit(map);
-		
-		if(isUpdateSuccess) {
+
+		if (isUpdateSuccess) {
 			String bookId = map.get("bookId").toString();
-			mav.setViewName("redirect:/detail?bookId="+bookId);
-		}else {
+			mav.setViewName("redirect:/detail?bookId=" + bookId);
+		} else {
 			mav = this.update(map);
 		}
-		
+		return mav;
+	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public ModelAndView deletePost(@RequestParam Map<String, Object> map) {
+		ModelAndView mav = new ModelAndView();
+		boolean isDeleteSuccess = this.bookService.remove(map);
+
+		if (isDeleteSuccess) {
+			mav.setViewName("redirect:/list");
+		} else {
+			String bookId = map.get("bookId").toString();
+			mav.setViewName("redirect:/detail?bookId=" + bookId);
+		}
 		return mav;
 	}
 }
